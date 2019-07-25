@@ -19,7 +19,7 @@
 
   var topics = ['/201907/outputs/showFollow','/201907/outputs/showA'];
   var images = ['showFollow.jpg','showA.jpg']
-
+  var img_dir = 'img';
 function connect(url) {
 
     var ros = new ROSLIB.Ros({
@@ -50,7 +50,7 @@ function connect(url) {
             messageType : 'std_msgs/Bool'
         }));
         console.log(listeners[i]);
-        image_dict[topics[i]] = images[i]
+        image_dict[topics[i]] = img_dir + "/" + images[i]
         listeners[i].subscribe(function(message) {
             console.log(message);
             console.log(i);
