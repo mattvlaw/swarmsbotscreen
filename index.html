@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<script type="text/javascript" src="http://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="http://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+  crossorigin="anonymous"></script>
+ 
+
+
+<script type="text/javascript" type="text/javascript">
+  // Connecting to ROS
+  // -----------------
+
+  var topics = ['/201907/outputs/showFollow','/201907/outputs/showA'];
+  var images = ['showFollow.jpg','showA.jpg']
+
+function connect(url) {
+
+    var ros = new ROSLIB.Ros({
+        url : url
+    });
+
+    ros.on('connection', function() {
+        console.log('Connected to websocket server.');
+    });
+
+    ros.on('error', function(error) {
+        console.log('Error connecting to websocket server: ', error);
+    });
+
+    ros.on('close', function() {
+        console.log('Connection to websocket server closed.');
+    });
+
+
+    // Subscribing to a Topic
+    // ----------------------
+    var listeners = [];
+    var image_dict = {}
+    for(let i = 0; i < topics.length; i++){
+        listeners.push(new ROSLIB.Topic({
+            ros : ros,
+            name : topics[i],
+            messageType : 'std_msgs/Bool'
+        }));
+        console.log(listeners[i]);
+        image_dict[topics[i]] = images[i]
+        listeners[i].subscribe(function(message) {
+            console.log(message);
+            console.log(i);
+            //console.log('Received message on ' + listeners[i].name + ': ' + message.data);
+            //console.log(images[i]);
+            $("#image").attr("src",image_dict[listeners[i].name]);
+        });
+    }
+
+}
+$(document).ready(()=>{
+    $("#connect").click((e)=>{
+        e.preventDefault();
+        console.log("clicked");
+        connect('ws://localhost:9090');
+        $("#url").hide()
+        $("#connect").hide()
+        $("#image").show();
+    });
+});
+
+  
+</script>
+</head>
+
+<body>
+  <div id="imagecontainer"><img id="image" alt="image here" src="" hidden="true" height="768px" width="1024px"/></div>
+  <form>
+      <input type="text" id="url" value="ws://localhost:9090">
+      <button id="connect">Connect!</button>
+  </form>
+</body>
+</html>
