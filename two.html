@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+
+<!--<script type="text/javascript" src="https://static.robotwebtools.org/EventEmitter2/current/eventemitter2.min.js"></script>
+<script type="text/javascript" src="https://static.robotwebtools.org/roslibjs/current/roslib.min.js"></script>-->
+  <script type="text/javascript" src="js/roslib.min.js"></script>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+  integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+  crossorigin="anonymous"></script>
+ 
+
+
+<script type="text/javascript" type="text/javascript">
+  // Connecting to ROS
+  // -----------------
+
+  var topics = ['/201907/outputs/showFollow','/201907/outputs/showA', '/201907/ProjectBegin', '/201907/ProjectFinal', '/201907/WayPointNum'];
+  var images = ['showFollow.jpg','showA.jpg']
+  var img_dir = 'img';
+function connect(url) {
+
+    var ros = new ROSLIB.Ros({
+        url : url
+    });
+
+    ros.on('connection', function() {
+        console.log('Connected to websocket server.');
+    });
+
+    ros.on('error', function(error) {
+        console.log('Error connecting to websocket server: ', error);
+    });
+
+    ros.on('close', function() {
+        console.log('Connection to websocket server closed.');
+    });
+
+
+    // Subscribing to a Topic
+    // ----------------------
+    var listeners = [];
+    var image_dict = {}
+    var waypoints = 0;
+    
+    var begin_callback = (message)=>{
+      let filename = message.data;
+      waypoints = 0;
+      $("#image").attr("src",img_dir+"/"+filename);
+      
+//       setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-2.png"); }, 3000);
+//       setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4a.png"); }, 3000);
+//       setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-5.png"); }, 3000); 
+    }
+    
+    var begin_listener = new ROSLIB.Topic({
+            ros : ros,
+            name : '/201907two/WayPointBegin2',
+            messageType : 'std_msgs/String'
+        });
+
+    begin_listener.subscribe(begin_callback);
+                       
+    var end_callback = (message)=>{
+      let filename = message.data;
+      $("#image").attr("src",img_dir+"/"+filename);
+    }
+    var end_listener = new ROSLIB.Topic({
+            ros : ros,
+            name : '/201907two/WayPointEnd2',
+            messageType : 'std_msgs/String'
+        });
+
+    end_listener.subscribe(end_callback);
+    
+    var waypoint_callback = (message)=>{
+      let waypoint_id = message.data;
+      if(waypoint_id == 0){
+         $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-8.png");
+//         setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4b.png"); }, 3000);
+      }
+      else if(waypoint_id == 1){  
+         $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-9.png");
+//         setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4c.png"); }, 3000);
+      }
+      else if (waypoint_id == 2){
+         $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-10.png");
+//         setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4d.png"); }, 3000);
+      }
+      else if (waypoint_id == 3){
+        
+         $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-11.png");
+//         setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4e.png"); }, 3000);
+      }
+      else if (waypoint_id == 4){
+        
+         $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-12.png");
+      }
+//       waypoints++;
+      
+    }
+    var waypoint_listener = new ROSLIB.Topic({
+            ros : ros,
+            name : '/201907two/WayPointNum2',
+            messageType : 'std_msgs/Int32'
+        });
+
+    waypoint_listener.subscribe(waypoint_callback);    
+    
+//     for(let i = 0; i < topics.length; i++){
+//         listeners.push(new ROSLIB.Topic({
+//             ros : ros,
+//             name : topics[i],
+//             messageType : 'std_msgs/Bool'
+//         }));
+//         console.log(listeners[i]);
+//         image_dict[topics[i]] = img_dir + "/" + images[i]
+//         listeners[i].subscribe(function(message) {
+//             console.log(message);
+//             console.log(i);
+//             //console.log('Received message on ' + listeners[i].name + ': ' + message.data);
+//             //console.log(images[i]);
+//             $("#image").attr("src",image_dict[listeners[i].name]);
+//         });
+//     }
+
+}
+$(document).ready(()=>{
+    $("#connect").click((e)=>{
+        e.preventDefault();
+        console.log("clicked");
+        //connect('ws://localhost:9090');
+        connect($("#url").val());
+        $("#url").hide()
+        $("#connect").hide()
+        $("#image").show();
+    });
+});
+
+  
+</script>
+</head>
+
+<body>
+  <div id="imagecontainer"><img id="image" alt="image here" src="" hidden="true" height="768px" width="1024px"/></div>
+  <form>
+      <input type="text" id="url" value="ws://localhost:9090">
+      <button id="connect">Connect!</button>
+  </form>
+</body>
+</html>
