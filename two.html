@@ -48,6 +48,7 @@ function connect(url) {
     var begin_callback = (message)=>{
       let filename = message.data;
       waypoints = 0;
+      console.log("File:"+filename);
       $("#image").attr("src",img_dir+"/"+filename);
       
 //       setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-2.png"); }, 3000);
@@ -65,6 +66,7 @@ function connect(url) {
                        
     var end_callback = (message)=>{
       let filename = message.data;
+      console.log("File:"+filename);
       $("#image").attr("src",img_dir+"/"+filename);
     }
     var end_listener = new ROSLIB.Topic({
@@ -77,24 +79,24 @@ function connect(url) {
     
     var waypoint_callback = (message)=>{
       let waypoint_id = message.data;
-      if(waypoint_id == 0){
+      if(waypoint_id == 1){
          $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-8.png");
 //         setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4b.png"); }, 3000);
       }
-      else if(waypoint_id == 1){  
+      else if(waypoint_id == 2){  
          $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-9.png");
 //         setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4c.png"); }, 3000);
       }
-      else if (waypoint_id == 2){
+      else if (waypoint_id == 3){
          $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-10.png");
 //         setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4d.png"); }, 3000);
       }
-      else if (waypoint_id == 3){
+      else if (waypoint_id == 4){
         
          $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-11.png");
 //         setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4e.png"); }, 3000);
       }
-      else if (waypoint_id == 4){
+      else if (waypoint_id == 5){
         
          $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-12.png");
       }
