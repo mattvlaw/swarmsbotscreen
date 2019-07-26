@@ -48,7 +48,7 @@ function connect(url) {
     var begin_callback = (message)=>{
       let filename = message.data;
       waypoints = 0;
-      $("#image").attr("src",img_dir+"/"+"filename);
+      $("#image").attr("src",img_dir+"/"+filename);
       
 //       setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-2.png"); }, 3000);
 //       setTimeout(function(){ $("#image").attr("src",img_dir+"/"+"ad_hoc_swarms-4a.png"); }, 3000);
@@ -131,7 +131,8 @@ $(document).ready(()=>{
     $("#connect").click((e)=>{
         e.preventDefault();
         console.log("clicked");
-        connect('ws://localhost:9090');
+        //connect('ws://localhost:9090');
+        connect($("#url").val();
         $("#url").hide()
         $("#connect").hide()
         $("#image").show();
